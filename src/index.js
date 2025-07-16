@@ -34,7 +34,7 @@ const handlePost = async (e) => {
                 status: 401,
             });
         } else {
-            return await router.handle(e.request, { event: e });
+            return await router.fetch(e.request, { event: e });
         }
     }
 };
@@ -42,6 +42,6 @@ addEventListener('fetch', (e) => {
     if (e.request.method === 'POST') {
         e.respondWith(handlePost(e));
     } else {
-        e.respondWith(router.handle(e.request, { event: e }));
+        e.respondWith(router.fetch(e.request, { event: e }));
     }
 });

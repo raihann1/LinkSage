@@ -11,10 +11,11 @@
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
 		"vitest": "~3.0.7",
-		"wrangler": "^4.13.2"
+		"wrangler": "^4.24.4"
 	},
 	"dependencies": {
 		"discord-interactions": "^4.1.1",
-		"discord.js": "^14.19.1"
+		"discord.js": "^14.19.1",
+		"itty-router": "^5.0.18"
 	}
 }
