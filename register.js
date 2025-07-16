@@ -16,8 +16,6 @@ client.on("ready", async () => {
     .setDescription("Replies with Pong!");
   await guild.commands.set([
     pingCmd.toJSON(),
-    appealCmd.toJSON(),
-    debugCmd.toJSON(),
   ]);
   // Guild-only commands while in development
   await client.application?.commands.set([]);

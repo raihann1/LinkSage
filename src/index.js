@@ -1,4 +1,6 @@
 import { Router } from 'itty-router';
+import { ping } from './commands/ping'
+import { deferReply } from './methods';
 import { verifyKey } from 'discord-interactions';
 import { InteractionType } from 'discord-api-types/v10';
 const router = Router();
@@ -13,8 +15,15 @@ router.post('/interactions', async (request, args) => {
         // # Application Commands Handling
     } else if (message.type === InteractionType.ApplicationCommand) {
         // commands
-
+        if(message.data.name === 'ping') {
+            event.waitUntil(
+                (async () => {
+                    await ping(message);
+                })()
+            );
+            return new Response(await deferReply(true), { status: 200, headers: { 'Content-Type' : 'application/json' }});
     }
+ }
 });
 
 // handle incoming requests, verify interactions
