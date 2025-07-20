@@ -14,8 +14,15 @@ client.on("ready", async () => {
   const pingCmd = new SlashCommandBuilder()
     .setName("ping")
     .setDescription("Replies with Pong!");
+  const linkScanCmd = new SlashCommandBuilder()
+    .setName("linkscan")
+    .setDescription("Scans given link for any malware, phising, etc.")
+    .addStringOption((option) =>
+      option.setName("link").setDescription("Link to scan").setRequired(true)
+    );
   await guild.commands.set([
     pingCmd.toJSON(),
+    linkScanCmd.toJSON()
   ]);
   // Guild-only commands while in development
   await client.application?.commands.set([]);
