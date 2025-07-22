@@ -1,5 +1,6 @@
 import { Router } from 'itty-router';
 import { ping } from './commands/ping'
+import { linkScan } from './commands/linkscan'
 import { deferReply } from './methods';
 import { verifyKey } from 'discord-interactions';
 import { InteractionType } from 'discord-api-types/v10';
@@ -22,7 +23,15 @@ router.post('/interactions', async (request, args) => {
                 })()
             );
             return new Response(await deferReply(true), { status: 200, headers: { 'Content-Type' : 'application/json' }});
-    }
+        } else if(message.data.name === 'linkscan') {
+           event.waitUntil(
+                (async () => {
+                    await linkScan(message, message.data.options[0].value);
+                })()
+            );
+            return new Response(await deferReply(true), { status: 200, headers: { 'Content-Type' : 'application/json' }});
+        }
+
  }
 });
 
