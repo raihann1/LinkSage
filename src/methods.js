@@ -1,8 +1,8 @@
 import { InteractionResponseType } from 'discord-api-types/v10'
 import * as discordBuilder from '@discordjs/builders'
 module.exports = {
-    replyInteraction: async (interaction, content, ephemeral) => {
-        if (ephemeral) {
+    replyInteraction: async (interaction, content, ephemeral, embed) => {
+        if (ephemeral && embed) {
             // replies to the given interaction privately (ephemeral)
             return await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
                 method: 'PATCH',
@@ -12,9 +12,10 @@ module.exports = {
                 body: JSON.stringify({
                     content: content,
                     flags: 1 << 6,
+                    embeds: [embed],
                 }),
             })
-        } else {
+        } else if(!ephemeral && embed) {
             await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
                 method: 'PATCH',
                 headers: {
@@ -22,6 +23,18 @@ module.exports = {
                 },
                 body: JSON.stringify({
                     content: content,
+                }),
+            })
+        } else if (ephemeral && !embed) {
+           return await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: content,
+                    flags: 1 << 6,
+                    embeds: [embed],
                 }),
             })
         }

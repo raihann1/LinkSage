@@ -20,9 +20,13 @@ client.on("ready", async () => {
     .addStringOption((option) =>
       option.setName("link").setDescription("Link to scan").setRequired(true)
     );
+  const helpCmd = new SlashCommandBuilder()
+    .setName("help")
+    .setDescription("Shows information about the bot, including commands.");
   await guild.commands.set([
     pingCmd.toJSON(),
-    linkScanCmd.toJSON()
+    linkScanCmd.toJSON(),
+    helpCmd.toJSON()
   ]);
   // Guild-only commands while in development
   await client.application?.commands.set([]);
