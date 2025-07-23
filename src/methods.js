@@ -1,4 +1,5 @@
 import { InteractionResponseType } from 'discord-api-types/v10'
+import * as discordBuilder from '@discordjs/builders'
 module.exports = {
     replyInteraction: async (interaction, content, ephemeral) => {
         if (ephemeral) {
@@ -40,5 +41,56 @@ module.exports = {
         } else {
             return JSON.stringify(deferRes);
         }
+    },
+    editInteractionMsg: async (interaction, content, embed) => {
+        // edits the original interaction message
+        if(!embed) {
+        return await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
+            method: 'PATCH',    
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: content,
+            })
+        });
+      } else {
+        return await fetch(`https://discord.com/api/v10/webhooks/${interaction.application_id}/${interaction.token}/messages/@original`, {
+            method: 'PATCH',    
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: content,
+                embeds: [embed]
+            })
+        });
+      }
+    },
+    createEmbed: async (title, description, color, footer, thumbnail) => {
+        const embed = new discordBuilder.EmbedBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setColor(color)
+        // footer & thumbnail are optional
+        if(footer) {
+            embed.setFooter({ text: footer });
+        }
+        if (thumbnail) {
+            embed.setThumbnail(thumbnail);
+        }
+        return embed;
+    },
+    sendMsgWithBot: async (channelId, content) => {
+        return await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+            },
+            body: JSON.stringify({
+                content: content,
+            }),
+        });
     }
 }
