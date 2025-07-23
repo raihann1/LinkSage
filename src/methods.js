@@ -80,17 +80,5 @@ module.exports = {
             embed.setThumbnail(thumbnail);
         }
         return embed;
-    },
-    sendMsgWithBot: async (channelId, content) => {
-        return await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bot ${process.env.DISCORD_BOT_TOKEN}`,
-            },
-            body: JSON.stringify({
-                content: content,
-            }),
-        });
     }
 }
