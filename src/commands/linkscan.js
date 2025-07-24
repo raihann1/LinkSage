@@ -1,5 +1,6 @@
 import { replyInteraction, editInteractionMsg, createEmbed } from "../methods"
-import { pollSslLabs } from "../scan";
+import { pollSslLabs, pollVirusTotal, getOverallAnalysis } from "../scan";
+
 
 export async function linkScan(interaction, link) {
     // check if the link is valid
@@ -19,8 +20,18 @@ if (!link || !/^((https?:\/\/)?(www\.)?)?([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-
         console.error(`SSL Labs error: ${err.message}`);
         sslLabsResult = `SSL Labs: ❓ (Unknown)`;
     }
+    // SECOND: VirusTotal API
+    let virusTotalResult;
+    try {
+        virusTotalResult = await pollVirusTotal(domain, interaction);
+    } catch (err) {
+        console.error(`VirusTotal error: ${err.message}`);
+        virusTotalResult = `VirusTotal: ❓ (Unknown)`;
+    }
+
     // create embed for results
-    const embed = await createEmbed("LinkSage - Results", `Results for **${link}**:\n\n${sslLabsResult}`, 0x00AE86, "LinkSage", "https://cdn.discordapp.com/attachments/1396626483736346735/1397352856620761200/99BCF3CC-BDDF-4888-87BA-CE23EF37B015.png?ex=688169c2&is=68801842&hm=f8062cdccaf5566bfa92fa9d489a54329ca2ed018b9928da9412eeae556b16f6");
+    const overallAnalysis = getOverallAnalysis(sslLabsResult, virusTotalResult);
+    const embed = await createEmbed("LinkSage - Results", `Results for **${link}**:\n\n${sslLabsResult}\n\n${virusTotalResult}`, 0x00AE86, "LinkSage", "https://cdn.discordapp.com/attachments/1396626483736346735/1397352856620761200/99BCF3CC-BDDF-4888-87BA-CE23EF37B015.png?ex=688169c2&is=68801842&hm=f8062cdccaf5566bfa92fa9d489a54329ca2ed018b9928da9412eeae556b16f6");
     await editInteractionMsg(interaction, `Scan complete! View results below.`, embed);
   }
 }
