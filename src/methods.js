@@ -23,6 +23,7 @@ module.exports = {
                 },
                 body: JSON.stringify({
                     content: content,
+                    embeds: [embed],
                 }),
             })
         } else if (ephemeral && !embed) {
@@ -33,8 +34,7 @@ module.exports = {
                 },
                 body: JSON.stringify({
                     content: content,
-                    flags: 1 << 6,
-                    embeds: [embed],
+                    flags: 1 << 6
                 }),
             })
         }

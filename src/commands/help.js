@@ -1,5 +1,7 @@
 import { replyInteraction, createEmbed } from "../methods"
+import { commandInfo as pingCommand } from './ping';
+import { commandInfo as linkScanCommand } from './linkscan';
 export async function help(interaction) {
-    const embed = await createEmbed("LinkSage", "List of available commands:\n- /ping: Responds with Pong!\n- /linkscan: Scans a link for security issues", 0x00AE86, "LinkSage");
+    const embed = await createEmbed("LinkSage", `List of available commands:\n\n\`${pingCommand.name}\`: ${pingCommand.description}\n\`${linkScanCommand.name}\`: ${linkScanCommand.description}`, 0x00AE86, "LinkSage");
     await replyInteraction(interaction, "", true, embed);
 }
