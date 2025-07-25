@@ -1,6 +1,8 @@
 const POLL_INTERVAL = 2000; 
-const MAX_WAIT_TIME = 10000; 
-const MAX_WAIT_VT = 10000;
+const MAX_WAIT_TIME = 17000;
+const MAX_WAIT_VT = 5000;
+
+import { editInteractionMsg } from './methods.js';
 export async function pollSslLabs(domain, interaction, startTime = Date.now()) {
     const apiUrl = `https://api.ssllabs.com/api/v3/analyze?host=${domain}&publish=off&fromCache=on&all=done`;
     const resp = await fetch(apiUrl, { cf: { cacheTtl: 60 } });
@@ -26,12 +28,13 @@ export async function pollSslLabs(domain, interaction, startTime = Date.now()) {
         return `SSL Labs: ${symbol} (${message})`;
     } else if (data.status === "ERROR") {
         console.error(`SSL Labs error: ${data.status}`);
+        console.error(`Morre info for SSL Labs error: ${data}`);
         return `SSL Labs: ❓ (Unknown or no SSL grade available)`;
     } else {
         console.log(`SSL Labs status: ${data.status}`); // Still processing
         if (Date.now() - startTime < MAX_WAIT_TIME) {
             let timeElapsedinSeconds = Math.floor((Date.now() - startTime) / 1000);
-            await editInteractionMsg(interaction, `⌛ Still scanning... Please wait. Time elapsed: ${timeElapsedinSeconds} seconds`, null);
+            await editInteractionMsg(interaction, `⌛ Scanning SSL certificate... Please wait. Time elapsed: ${timeElapsedinSeconds} seconds`, null);
             await new Promise(res => setTimeout(res, POLL_INTERVAL));
             return await pollSslLabs(domain, interaction, startTime);
         } else {
@@ -39,8 +42,6 @@ export async function pollSslLabs(domain, interaction, startTime = Date.now()) {
         }
     }
 }
-
-// time to do the same for virustotal scanning!
 
 export async function pollVirusTotal(domain, interaction, startTime = Date.now()) {
     const apiUrl = `https://www.virustotal.com/api/v3/domains/${domain}`;
@@ -94,7 +95,7 @@ export async function pollVirusTotal(domain, interaction, startTime = Date.now()
         console.log(`VirusTotal status: ${data.status}`); // Still processing
         if (Date.now() - startTime < MAX_WAIT_VT) {
             let timeElapsedinSeconds = Math.floor((Date.now() - startTime) / 1000);
-            await editInteractionMsg(interaction, `⌛ Still scanning... Please wait. Time elapsed: ${timeElapsedinSeconds} seconds`, null);
+            await editInteractionMsg(interaction, `⌛ Scanning for virus/malware.. Please wait. Time elapsed: ${timeElapsedinSeconds} seconds`, null);
             await new Promise(res => setTimeout(res, POLL_INTERVAL));
             return await pollVirusTotal(domain, interaction, startTime);
         } else {
@@ -135,7 +136,7 @@ export function getOverallAnalysis(sslResult, vtResult) {
     } else if (sslSafe && vtClean) {
         symbol = "✅";
         verdict = "SAFE";
-        recommendation = "This site appears secure with a valid SSL certificate and no malicious flags. You should still be cautious.";
+        recommendation = "This site appears secure with a valid SSL certificate and no malicious flags. It is most likely safe to visit, but always proceed with caution.";
     } else if (sslSafe && vtUnknown) {
         symbol = "⚠️";
         verdict = "UNKNOWN";
@@ -147,8 +148,8 @@ export function getOverallAnalysis(sslResult, vtResult) {
     } else {
         symbol = "⚠️";
         verdict = "UNKNOWN";
-        recommendation = "Unable to complete full security analysis. Exercise caution when visiting.";
+        recommendation = "Unable to complete full security analysis. This may be due to the fact the domain does not exist, is unreachable, or the analysis timed out. You can try again, but still exercise caution when visiting.";
     }
 
-    return `\n\n**Overall Analysis:** ${symbol} **${verdict}**\n${recommendation}`;
+    return `\n\n${symbol} **${verdict}**\n${recommendation}`;
 }

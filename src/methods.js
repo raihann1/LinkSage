@@ -80,12 +80,14 @@ module.exports = {
         });
       }
     },
-    createEmbed: async (title, description, color, footer, thumbnail) => {
+    createEmbed: async (title, description, color, footer, thumbnail, fields) => {
         const embed = new discordBuilder.EmbedBuilder()
             .setTitle(title)
             .setDescription(description)
             .setColor(color)
-        // footer & thumbnail are optional
+        if(fields) {
+            embed.addFields(fields);
+        }
         if(footer) {
             embed.setFooter({ text: footer });
         }
