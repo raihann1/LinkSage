@@ -2,7 +2,13 @@ import { replyInteraction, createEmbed } from "../methods";
 import { commandInfo as pingCommand } from "./ping";
 import { commandInfo as linkScanCommand } from "./linkscan";
 import { commandInfo as previewCommand } from "./preview";
-const commands = [pingCommand, linkScanCommand, previewCommand];
+
+const helpCommand = {
+    name: "/help",
+    description: "Displays a list of available commands and their descriptions.",
+};
+const commands = [pingCommand, linkScanCommand, previewCommand, helpCommand];
+
 export async function help(interaction) {
     // loop through and create desc instead of doing this manually
     const helpDescription = commands.map(cmd => `\`${cmd.name}\`: ${cmd.description}`).join("\n");
