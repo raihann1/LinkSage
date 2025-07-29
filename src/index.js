@@ -2,6 +2,7 @@ import { Router } from "itty-router";
 import { ping } from "./commands/ping";
 import { linkScan } from "./commands/linkscan";
 import { help } from "./commands/help";
+import { preview } from "./commands/preview";
 import { deferReply } from "./methods";
 import { verifyKey } from "discord-interactions";
 import { InteractionType } from "discord-api-types/v10";
@@ -39,6 +40,16 @@ router.post("/interactions", async (request, args) => {
       event.waitUntil(
         (async () => {
           await help(message);
+        })()
+      );
+      return new Response(await deferReply(true), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else if (message.data.name === "preview") {
+      event.waitUntil(
+        (async () => {
+          await preview(message);
         })()
       );
       return new Response(await deferReply(true), {

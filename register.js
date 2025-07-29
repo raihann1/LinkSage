@@ -23,10 +23,17 @@ client.on("ready", async () => {
   const helpCmd = new SlashCommandBuilder()
     .setName("help")
     .setDescription("Shows information about the bot, including commands.");
+  const previewCmd = new SlashCommandBuilder()
+    .setName("preview")
+    .setDescription("Preview a link, particulary shortened links.")
+    .addStringOption((option) =>
+      option.setName("link").setDescription("Link to preview").setRequired(true)
+    );
   await guild.commands.set([
     pingCmd.toJSON(),
     linkScanCmd.toJSON(),
-    helpCmd.toJSON()
+    helpCmd.toJSON(),
+    previewCmd.toJSON()
   ]);
   // Guild-only commands while in development
   await client.application?.commands.set([]);
