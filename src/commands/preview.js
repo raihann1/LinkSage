@@ -98,3 +98,8 @@ export async function preview(interaction) {
         return;
     }   
 }
+
+export const commandInfo = {
+    name: "preview",
+    description: "Preview a link, particularly shortened links.",
+}
