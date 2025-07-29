@@ -95,7 +95,7 @@ module.exports = {
       );
     }
   },
-  createEmbed: async (title, description, color, footer, thumbnail, fields) => {
+  createEmbed: async (title, description, color, footer, thumbnail, fields, image, url) => {
     const embed = new discordBuilder.EmbedBuilder()
       .setTitle(title)
       .setDescription(description)
@@ -109,6 +109,13 @@ module.exports = {
     if (thumbnail) {
       embed.setThumbnail(thumbnail);
     }
+    if (image) {
+      embed.setImage(image);
+    }
+    if (url) {
+      embed.setURL(url);
+    }
+    embed.setTimestamp();
     return embed;
   },
 };

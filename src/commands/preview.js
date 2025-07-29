@@ -1,5 +1,6 @@
 import { replyInteraction } from "../methods";
 import * as cheerio from 'cheerio';
+import { createEmbed } from "../methods";
 
 export async function preview(interaction) {
     const link = interaction.data.options[0].value;
@@ -55,13 +56,45 @@ export async function preview(interaction) {
         const ogImage = $('meta[property="og:image"]').attr("content");
         const twitterImage = $('meta[name="twitter:image"]').attr("content");
         const faviconImage = $('link[rel="icon"]').attr("href") || $('link[rel="shortcut icon"]').attr("href");
+        
+        let imageUrl = ogImage || twitterImage || faviconImage;
+        
+        if (imageUrl && !imageUrl.startsWith('http')) {
+            const baseUrl = new URL(fullUrl);
+            imageUrl = new URL(imageUrl, baseUrl.origin).href;
+        }
+
+        let embed = await createEmbed(
+            title.length > 256 ? title.substring(0, 253) + "..." : title,
+            description.length > 4096 ? description.substring(0, 4093) + "..." : description,
+            0x6dbad1,
+            `LinkSage`,
+            null,
+            // add a field for status instead of putting it in the footer
+            [
+                { name: "Status", value: `${response.status} ${response.statusText}`, inline: true },
+            ],
+            imageUrl ? imageUrl : null,
+            response.url 
+        )
+
+        await replyInteraction(interaction, "", true, embed);
 
     } catch (error) {
         console.error(`Preview error: ${error.message}`);
-        await replyInteraction(
-            interaction,
-            `Failed to fetch link preview: ${error.message}. Please check the link and try again.`,
-            true
-        );
-    }
+        if (error.message.includes("530")) {
+            await replyInteraction(
+                interaction,
+                `Failed to fetch link preview. The link might be invalid or inaccessible.`,
+                true
+            );
+        } else {
+            await replyInteraction(
+                interaction,
+                `Failed to fetch link preview. The link may not exist.`,
+                true
+            );
+        }
+        return;
+    }   
 }
