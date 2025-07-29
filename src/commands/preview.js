@@ -100,6 +100,6 @@ export async function preview(interaction) {
 }
 
 export const commandInfo = {
-    name: "preview",
+    name: "/preview",
     description: "Preview a link, particularly shortened links.",
 }
