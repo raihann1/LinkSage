@@ -1,6 +1,6 @@
 import { Router } from "itty-router";
 import { ping } from "./commands/ping";
-import { linkScan } from "./commands/linkscan";
+import { linkScan, linkScanContextMenu } from "./commands/linkscan";
 import { help } from "./commands/help";
 import { preview } from "./commands/preview";
 import { deferReply } from "./methods";
@@ -50,6 +50,17 @@ router.post("/interactions", async (request, args) => {
       event.waitUntil(
         (async () => {
           await preview(message);
+        })()
+      );
+      return new Response(await deferReply(true), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else if( message.data.name === "Scan Links") {
+      // Context menu handling
+      event.waitUntil(
+        (async () => {
+          await linkScanContextMenu(message);
         })()
       );
       return new Response(await deferReply(true), {

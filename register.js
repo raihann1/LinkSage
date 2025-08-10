@@ -1,7 +1,8 @@
-const { Client, GatewayIntentBits } = require("discord.js");
+const { Client, GatewayIntentBits, ApplicationCommandType } = require("discord.js");
 require("dotenv").config();
 const {
   SlashCommandBuilder,
+  ContextMenuCommandBuilder
 } = require("@discordjs/builders");
 const client = new Client({
   intents: [GatewayIntentBits.GuildMembers, GatewayIntentBits.Guilds],
@@ -29,11 +30,15 @@ client.on("ready", async () => {
     .addStringOption((option) =>
       option.setName("link").setDescription("Link to preview").setRequired(true)
     );
+  const contextMenuCmd = new ContextMenuCommandBuilder()
+    .setName("Scan Links")
+    .setType(ApplicationCommandType.Message);
   await guild.commands.set([
     pingCmd.toJSON(),
     linkScanCmd.toJSON(),
     helpCmd.toJSON(),
-    previewCmd.toJSON()
+    previewCmd.toJSON(),
+    contextMenuCmd.toJSON()
   ]);
   // Guild-only commands while in development
   await client.application?.commands.set([]);

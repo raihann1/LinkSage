@@ -80,3 +80,23 @@ export const commandInfo = {
   name: "/linkscan",
   description: "Scans a link for security issues",
 };
+
+export async function linkScanContextMenu(interaction) {
+    // parse message to find any and all links
+    const message = interaction.data.resolved?.messages?.[interaction.data.target_id].content;
+    const linkRegex = /https?:\/\/[^\s]+|(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/gi;
+    const links = message.match(linkRegex) || [];
+
+    // Remove duplicates and clean up links
+    const uniqueLinks = [...new Set(links.map(link => {
+        return link.replace(/[.,;!?]+$/, '');
+    }))];
+    if (uniqueLinks.length === 0) {
+        await replyInteraction(
+            interaction,
+            "No links found in the message. Please provide a message with links.",
+            true
+        );
+        return;
+    }
+}
