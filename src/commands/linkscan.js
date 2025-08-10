@@ -87,9 +87,8 @@ export async function linkScanContextMenu(interaction) {
     const linkRegex = /https?:\/\/[^\s]+|(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/gi;
     const links = message.match(linkRegex) || [];
 
-    // Remove duplicates and clean up links
     const uniqueLinks = [...new Set(links.map(link => {
-        return link.replace(/[.,;!?]+$/, '');
+        return link.replace(/[.,;!?()[\]]+$/, '');
     }))];
     if (uniqueLinks.length === 0) {
         await replyInteraction(
