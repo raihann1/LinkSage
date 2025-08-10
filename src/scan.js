@@ -1,6 +1,6 @@
 const POLL_INTERVAL = 2000;
-const MAX_WAIT_TIME = 17000;
-const MAX_WAIT_VT = 5000;
+const MAX_WAIT_TIME = 3000;
+const MAX_WAIT_VT = 3000;
 
 import { editInteractionMsg } from "./methods.js";
 export async function pollSslLabs(domain, interaction, startTime = Date.now()) {

@@ -98,5 +98,61 @@ export async function linkScanContextMenu(interaction) {
             true
         );
         return;
+    } else {
+        const linksToScan = uniqueLinks.slice(0, 3);
+        await replyInteraction(interaction, `⌛ Scanning ${linksToScan.length} link(s). Please wait.`, true);
+        let results = [];
+        for (const link of linksToScan) {
+            const domain = link.replace(/^(https?:\/\/)?(www\.)?/i, "").split("/")[0];
+            // FIRST: SSL Labs API
+            let sslLabsResult;
+            try {
+                sslLabsResult = await pollSslLabs(domain, interaction);
+            } catch (err) {
+                console.error(`SSL Labs error: ${err.message}`);
+                sslLabsResult = `SSL Labs: ❓ (Unknown)`;
+            }
+            // SECOND: VirusTotal API
+            let virusTotalResult;
+            try {
+                virusTotalResult = await pollVirusTotal(domain, interaction);
+            } catch (err) {
+                console.error(`VirusTotal error: ${err.message}`);
+                virusTotalResult = `VirusTotal: ❓ (Unknown)`;
+            }
+            const overallAnalysis = getOverallAnalysis(sslLabsResult, virusTotalResult);
+            results.push({ link, sslLabsResult, virusTotalResult, overallAnalysis });
+        }
+        const fields = results.map(result => {
+            return {
+                name: result.link,
+                value: `**SSL Labs**: ${result.sslLabsResult}\n**VirusTotal**: ${result.virusTotalResult}\n**Overall Analysis**: ${result.overallAnalysis}`,
+                inline: false
+            };
+        }
+        );
+        let embedColor;
+        if (results.some(r => r.overallAnalysis.includes("DANGEROUS") || r.overallAnalysis.includes("HIGH RISK"))) {
+            embedColor = 0xff0000; 
+        } else if (results.some(r => r.overallAnalysis.includes("MEDIUM RISK") || r.overallAnalysis.includes("LOW RISK"))) {
+            embedColor = 0xffa500; 
+        } else if (results.every(r => r.overallAnalysis.includes("SAFE"))) {
+            embedColor = 0x00ae86; 
+        } else {
+            embedColor = 0x808080; 
+        }
+        const embed = await createEmbed(
+            "LinkSage - Results",
+            `Results for scanned links:\n`,
+            embedColor,
+            "LinkSage",
+            "https://cdn.discordapp.com/attachments/1396626483736346735/1397352856620761200/99BCF3CC-BDDF-4888-87BA-CE23EF37B015.png?ex=688169c2&is=68801842&hm=f8062cdccaf5566bfa92fa9d489a54329ca2ed018b9928da9412eeae556b16f6",
+            fields
+        );
+        await editInteractionMsg(
+            interaction,
+            `Scan complete! View results below.`,
+            embed
+        );
     }
 }
