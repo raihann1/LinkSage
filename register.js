@@ -30,15 +30,19 @@ client.on("ready", async () => {
     .addStringOption((option) =>
       option.setName("link").setDescription("Link to preview").setRequired(true)
     );
-  const contextMenuCmd = new ContextMenuCommandBuilder()
+  const scanLinkContextMenu = new ContextMenuCommandBuilder()
     .setName("Scan Links")
+    .setType(ApplicationCommandType.Message);
+  const verifyFileCmd = new ContextMenuCommandBuilder()
+    .setName("Scan Files")
     .setType(ApplicationCommandType.Message);
   await guild.commands.set([
     pingCmd.toJSON(),
     linkScanCmd.toJSON(),
     helpCmd.toJSON(),
     previewCmd.toJSON(),
-    contextMenuCmd.toJSON()
+    scanLinkContextMenu.toJSON(),
+    verifyFileCmd.toJSON()
   ]);
   // Guild-only commands while in development
   await client.application?.commands.set([]);
