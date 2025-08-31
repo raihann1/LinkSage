@@ -4,6 +4,7 @@ import { linkScan, linkScanContextMenu } from "./commands/linkscan";
 import { verifyFile } from "./commands/verifyFile";
 import { help } from "./commands/help";
 import { preview } from "./commands/preview";
+import { summarize } from "./commands/summarize";
 import { deferReply } from "./methods";
 import { verifyKey } from "discord-interactions";
 import { InteractionType } from "discord-api-types/v10";
@@ -57,7 +58,17 @@ router.post("/interactions", async (request, args) => {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
-    } else if(message.data.name === "Scan Links") {
+    } else if (message.data.name === "summarize") {
+      event.waitUntil(
+        (async () => {
+          await summarize(message);
+        })()
+      );
+      return new Response(await deferReply(true), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else if (message.data.name === "Scan Links") {
       // Context menu handling
       event.waitUntil(
         (async () => {
@@ -68,7 +79,7 @@ router.post("/interactions", async (request, args) => {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
-    } else if(message.data.name === "Scan Files") {
+    } else if (message.data.name === "Scan Files") {
       event.waitUntil(
         (async () => {
           await verifyFile(message);
@@ -78,8 +89,8 @@ router.post("/interactions", async (request, args) => {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
+    }
   }
-}
 });
 
 // handle incoming requests, verify interactions

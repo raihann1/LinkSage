@@ -36,13 +36,17 @@ client.on("ready", async () => {
   const verifyFileCmd = new ContextMenuCommandBuilder()
     .setName("Scan Files")
     .setType(ApplicationCommandType.Message);
+  const summarizeCmd = new SlashCommandBuilder()
+    .setName("summarize")
+    .setDescription("Summarizes the last 100 messages in this channel.")
   await guild.commands.set([
     pingCmd.toJSON(),
     linkScanCmd.toJSON(),
     helpCmd.toJSON(),
     previewCmd.toJSON(),
     scanLinkContextMenu.toJSON(),
-    verifyFileCmd.toJSON()
+    verifyFileCmd.toJSON(),
+    summarizeCmd.toJSON()
   ]);
   // Guild-only commands while in development
   await client.application?.commands.set([]);
