@@ -79,16 +79,6 @@ router.post("/interactions", async (request, args) => {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
-    } else if (message.data.name === "Scan Files") {
-      event.waitUntil(
-        (async () => {
-          await verifyFile(message);
-        })()
-      );
-      return new Response(await deferReply(true), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
     }
   }
 });
