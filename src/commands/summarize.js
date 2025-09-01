@@ -72,3 +72,8 @@ export async function summarize(interaction) {
     `AI Summary triggered in guild ${interaction.guild_id} by user ${interaction.member.user.id}. Content: ${summary}`
   );
 }
+
+export const commandInfo = {
+  name: "/summarize",
+  description: "Summarizes the last 100 messages in the channel (excluding bot messages, links, and mentions).",
+};

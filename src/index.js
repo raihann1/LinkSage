@@ -1,7 +1,6 @@
 import { Router } from "itty-router";
 import { ping } from "./commands/ping";
 import { linkScan, linkScanContextMenu } from "./commands/linkscan";
-import { verifyFile } from "./commands/verifyFile";
 import { help } from "./commands/help";
 import { preview } from "./commands/preview";
 import { summarize } from "./commands/summarize";
