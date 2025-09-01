@@ -36,7 +36,7 @@ client.on("ready", async () => {
   const summarizeCmd = new SlashCommandBuilder()
     .setName("summarize")
     .setDescription("Summarizes the last 100 messages in this channel.")
-  await guild.commands.set([
+  await client.application?.commands.set([
     pingCmd.toJSON(),
     linkScanCmd.toJSON(),
     helpCmd.toJSON(),
@@ -44,9 +44,7 @@ client.on("ready", async () => {
     scanLinkContextMenu.toJSON(),
     summarizeCmd.toJSON()
   ]);
-  // Guild-only commands while in development
-  await client.application?.commands.set([]);
-  console.log("Slash commands loaded into guild!");
+  console.log("Slash commands loaded globally!");
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
