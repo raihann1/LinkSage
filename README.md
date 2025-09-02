@@ -1,5 +1,5 @@
 # 🔐 LinkSage – Stateless Discord Intelligence Bot
-
+![banner](banner.png)
 ## Overview
 
 **LinkSage** is a powerful, stateless Discord bot designed to enhance safety, productivity, and privacy in Discord communities. Built entirely on **Cloudflare Workers**, it integrates via **slash commands** and **message context menu commands** (User Apps), allowing users to analyze links with ease and speed — without any database or persistent state.
