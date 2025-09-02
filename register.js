@@ -17,7 +17,7 @@ client.on("ready", async () => {
     .setDescription("Replies with Pong!");
   const linkScanCmd = new SlashCommandBuilder()
     .setName("linkscan")
-    .setDescription("Scans given link for any malware, phising, etc.")
+    .setDescription("Scans given link for any malware, phishing, etc.")
     .addStringOption((option) =>
       option.setName("link").setDescription("Link to scan").setRequired(true)
     );
